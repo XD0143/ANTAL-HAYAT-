@@ -301,6 +301,17 @@ app.get('/', (req, res) => {
     
     <div class="grid">
       <div class="card">
+        <h2>Create/Delete Bot Instance</h2>
+        <div class="form-group">
+          <label>Instance Name</label>
+          <input type="text" id="instanceName" placeholder="e.g. MyNewBot">
+        </div>
+        <button onclick="createInstance()" class="btn btn-success">Create Bot Instance</button>
+        <button onclick="deleteInstance()" class="btn btn-primary" style="background: #e94560;">Delete Bot Instance</button>
+        <p style="font-size: 0.8em; color: #aaa; margin-top: 10px;">Note: Creating a bot instance updates envconfig.json automatically.</p>
+      </div>
+
+      <div class="card">
         <h2>Bot Configuration</h2>
         <form id="configForm">
           <div class="form-group">
@@ -381,6 +392,50 @@ app.get('/', (req, res) => {
   </div>
   
   <script>
+    async function deleteInstance() {
+      const name = document.getElementById('instanceName').value;
+      if (!name) return showAlert('Enter instance name', 'error');
+      if (!confirm(\`Are you sure you want to delete \${name}?\`)) return;
+      
+      try {
+        const res = await fetch('/api/instance/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAlert(\`Instance \${name} deleted!\`, 'success');
+        } else {
+          showAlert(data.error || 'Failed to delete', 'error');
+        }
+      } catch (err) {
+        showAlert('Error deleting instance', 'error');
+      }
+    }
+
+    async function createInstance() {
+      const name = document.getElementById('instanceName').value;
+      if (!name) return showAlert('Enter instance name', 'error');
+      
+      try {
+        const res = await fetch('/api/instance/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAlert(\`Instance \${name} created and config updated!\`, 'success');
+          setTimeout(() => location.reload(), 2000);
+        } else {
+          showAlert(data.error || 'Failed to create', 'error');
+        }
+      } catch (err) {
+        showAlert('Error creating instance', 'error');
+      }
+    }
+    
     function showAlert(message, type) {
       const alert = document.getElementById('alert');
       alert.textContent = message;
@@ -522,6 +577,40 @@ app.get('/', (req, res) => {
   `);
 });
 
+app.post('/api/instance/create', (req, res) => {
+  try {
+    const { name } = req.body;
+    const config = getConfig();
+    config.BOTNAME = name;
+    saveConfig(config);
+    
+    if (botModule) {
+      botModule.loadConfig();
+    }
+    
+    res.json({ success: true, message: "Bot " + name + " created and config updated" });
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
+app.post('/api/instance/delete', (req, res) => {
+  try {
+    const { name } = req.body;
+    const config = getConfig();
+    if (config.BOTNAME === name) {
+      config.BOTNAME = "RAZA BOT"; // Reset to default
+      saveConfig(config);
+      if (botModule) botModule.loadConfig();
+      res.json({ success: true, message: "Bot " + name + " deleted and config reset" });
+    } else {
+      res.json({ success: false, error: "Bot instance not found or name mismatch" });
+    }
+  } catch (error) {
+    res.json({ success: false, error: error.message });
+  }
+});
+
 app.post('/api/config', (req, res) => {
   try {
     const config = req.body;
@@ -606,7 +695,7 @@ app.post('/api/test-message', async (req, res) => {
     const { uid } = req.body;
     const config = getConfig();
     
-    api.sendMessage(`Test message from ${config.BOTNAME}!`, uid);
+    api.sendMessage("Test message from " + config.BOTNAME + "!", uid);
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -623,7 +712,7 @@ app.get('/api/status', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`RAZA BOT Control Panel running on http://0.0.0.0:${PORT}`);
+  console.log("RAZA BOT Control Panel running on http://0.0.0.0:" + PORT);
   
   if (fs.existsSync(appstatePath)) {
     console.log('AppState found, starting bot...');
