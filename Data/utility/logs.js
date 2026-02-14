@@ -27,8 +27,8 @@ const printBanner = () => {
   console.log(chalk.blue('╔═══════════════════════════════════════════════════════╗'));
   console.log(chalk.blue('║') + chalk.yellow.bold('              ') + chalk.blue.bold('R') + chalk.yellow.bold('A') + chalk.blue.bold('Z') + chalk.yellow.bold('A') + chalk.blue.bold('-') + chalk.yellow.bold('B') + chalk.blue.bold('o') + chalk.yellow.bold('T') + chalk.blue.bold('                         ') + chalk.blue('║'));
   console.log(chalk.blue('╠═══════════════════════════════════════════════════════╣'));
-  console.log(chalk.blue('║') + chalk.yellow(' WhatsApp: ') + chalk.blue.bold('+923003310470') + chalk.yellow('                          ') + chalk.blue('║'));
-  console.log(chalk.blue('║') + chalk.yellow(' Email: ') + chalk.blue.bold('kashifrazamallah22@gmail.com') + chalk.yellow('          ') + chalk.blue('║'));
+  console.log(chalk.blue('║') + chalk.yellow(' WhatsApp: ') + chalk.blue.bold('+92299988546') + chalk.yellow('                          ') + chalk.blue('║'));
+  console.log(chalk.blue('║') + chalk.yellow(' Email: ') + chalk.blue.bold('Talhakhansk55@gmail.com') + chalk.yellow('          ') + chalk.blue('║'));
   console.log(chalk.blue('╚═══════════════════════════════════════════════════════╝'));
   console.log('');
 };
