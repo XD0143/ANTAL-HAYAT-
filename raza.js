@@ -379,14 +379,29 @@ async function startBot() {
       config
     });
     
-    const stopListen = api.listenMqtt(listener);
+    let stopListen;
+    try {
+      stopListen = api.listenMqtt(listener);
+    } catch (e) {
+      logs.error('LISTEN', 'Failed to start listener:', e.message);
+    }
     
     global.stopBot = () => {
-      if (stopListen) stopListen();
-      if (stopSchedulers) stopSchedulers();
-      if (api && api.logout) api.logout();
+      try {
+        if (stopListen && typeof stopListen === 'function') {
+          stopListen();
+        } else if (stopListen && typeof stopListen.stop === 'function') {
+          stopListen.stop();
+        }
+        
+        if (typeof stopSchedulers === 'function') stopSchedulers();
+        if (api && typeof api.logout === 'function') api.logout();
+      } catch (e) {
+        logs.error('STOP', 'Error during bot stop:', e.message);
+      }
       api = null;
       global.api = null;
+      global.stopBot = null;
       logs.warn('BOT', 'Bot has been stopped and logged out.');
     };
     
