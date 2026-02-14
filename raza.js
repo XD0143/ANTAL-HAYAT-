@@ -124,9 +124,9 @@ function loadConfig() {
   } catch (error) {
     logs.error('CONFIG', 'Failed to load config:', error.message);
     config = {
-      BOTNAME: 'RAZA BOT',
+      BOTNAME: 'TALHA BOT',
       PREFIX: '.',
-      ADMINBOT: ['61582493356125'],
+      ADMINBOT: ['100065216344877'],
       TIMEZONE: 'Asia/Karachi',
       PREFIX_ENABLED: true,
       REACT_DELETE_EMOJI: '😡',
