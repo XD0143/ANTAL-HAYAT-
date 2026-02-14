@@ -25,25 +25,25 @@ module.exports = {
     const randomPic = ownerPics[Math.floor(Math.random() * ownerPics.length)];
 
     const ownerInfo = `
-╔═══════════════════════════╗
+╔════════════════════════╗
 ║   ✨ 𝐁𝐎𝐓 𝐎𝐖𝐍𝐄𝐑 𝐈𝐍𝐅𝐎 ✨   ║
-╠═══════════════════════════╣
+╠════════════════════════╣
+║                            ║
+║  👤 𝐍𝐚𝐦𝐞: 𝐓𝐚𝐥𝐡𝐚 𝐏𝐚𝐭𝐡𝐚𝐍       ║
 ║                           ║
-║  👤 𝐍𝐚𝐦𝐞: 𝙺𝚊𝚎𝚕 𝙳𝚛𝚊𝚟𝚎𝚗𝚣     ║
-║                           ║
-╠═══════════════════════════╣
+╠═══════════════════════╣
 ║  📱 𝐂𝐨𝐧𝐭𝐚𝐜𝐭 𝐈𝐧𝐟𝐨:          ║
 ║                           ║
 ║  🌐 𝐅𝐚𝐜𝐞𝐛𝐨𝐨𝐤:              ║
-║  facebook.com/kaeldravenz ║
+║  https://www.facebook.com/broken019876 ║
 ║                           ║
 ║  📲 𝐖𝐡𝐚𝐭𝐬𝐀𝐩𝐩:              ║
-║  wa.me/923422413092       ║
+║  𝐏𝐫𝐢𝐯𝐚𝐭𝐞 𝐇𝐚𝐢𝐢 𝐛𝐎𝐬𝐬       ║
 ║                           ║
 ╠═══════════════════════════╣
 ║  🤖 𝐁𝐨𝐭 𝐃𝐞𝐭𝐚𝐢𝐥𝐬:           ║
 ║                           ║
-║  📛 Name: ${config.BOTNAME || 'RAZA BOT'}
+║  📛 Name: ${config.BOTNAME || 'TALHA'
 ║  ⚡ Prefix: ${config.PREFIX || '.'}
 ║  💻 Version: 2.0.0        ║
 ║  🛠️ Framework: WS3-FCA    ║
