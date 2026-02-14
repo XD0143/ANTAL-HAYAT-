@@ -87,77 +87,95 @@ app.get('/', (req, res) => {
     :root {
       --primary: #e94560;
       --secondary: #4ecca3;
-      --bg-dark: #1a1a2e;
-      --bg-card: rgba(255, 255, 255, 0.05);
+      --accent: #00d2ff;
+      --bg-dark: #0f0c29;
+      --bg-card: rgba(255, 255, 255, 0.03);
       --text-main: #ffffff;
-      --text-dim: #aaaaaa;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --text-dim: #b0b0b0;
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
     body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(233, 69, 96, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(78, 204, 163, 0.05) 0%, transparent 20%),
+        linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
       min-height: 100vh;
       color: var(--text-main);
       padding: 15px;
       overflow-x: hidden;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    @keyframes glow {
+      0% { box-shadow: 0 0 5px rgba(233, 69, 96, 0.2); }
+      50% { box-shadow: 0 0 20px rgba(233, 69, 96, 0.4); }
+      100% { box-shadow: 0 0 5px rgba(233, 69, 96, 0.2); }
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 0 auto;
-      animation: fadeIn 0.8s ease-out;
+      padding-bottom: 50px;
     }
 
     .header {
       text-align: center;
-      padding: 20px 0;
-      margin-bottom: 20px;
-      position: relative;
+      padding: 40px 0;
+      margin-bottom: 10px;
     }
 
     .header h1 {
-      font-size: 2.2em;
-      color: var(--primary);
-      text-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
-      letter-spacing: 2px;
-      margin-bottom: 10px;
+      font-size: 2.8em;
+      background: linear-gradient(to right, #e94560, #4ecca3);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 5px;
+      filter: drop-shadow(0 0 10px rgba(233, 69, 96, 0.3));
     }
 
     .header p {
       color: var(--text-dim);
-      font-size: 0.9em;
+      font-size: 1em;
+      font-weight: 300;
+      opacity: 0.8;
     }
 
     .bot-status {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 16px;
-      border-radius: 25px;
-      font-size: 0.85em;
-      font-weight: 600;
-      margin-top: 15px;
-      background: var(--bg-card);
+      gap: 10px;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 0.9em;
+      font-weight: 700;
+      margin-top: 25px;
+      background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
       transition: var(--transition);
+      animation: float 3s ease-in-out infinite;
     }
 
-    .bot-online { color: var(--secondary); box-shadow: 0 0 10px rgba(78, 204, 163, 0.2); }
-    .bot-offline { color: var(--primary); box-shadow: 0 0 10px rgba(233, 69, 96, 0.2); }
+    .bot-online { color: var(--secondary); border-color: rgba(78, 204, 163, 0.3); }
+    .bot-offline { color: var(--primary); border-color: rgba(233, 69, 96, 0.3); }
 
     .status-bar {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
+      gap: 15px;
+      margin-bottom: 30px;
     }
 
     @media (min-width: 768px) {
@@ -166,87 +184,98 @@ app.get('/', (req, res) => {
 
     .status-item {
       background: var(--bg-card);
-      padding: 15px;
-      border-radius: 12px;
+      padding: 20px 15px;
+      border-radius: 20px;
       text-align: center;
       border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(5px);
+      backdrop-filter: blur(15px);
       transition: var(--transition);
     }
 
     .status-item:hover {
-      transform: translateY(-5px);
+      transform: translateY(-8px) scale(1.02);
       background: rgba(255,255,255,0.08);
-      border-color: var(--primary);
+      border-color: var(--secondary);
     }
 
     .status-item span {
       display: block;
-      font-size: 0.75em;
+      font-size: 0.7em;
       color: var(--text-dim);
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       text-transform: uppercase;
+      letter-spacing: 1.5px;
     }
 
     .status-item strong {
-      font-size: 1.1em;
-      color: var(--secondary);
+      font-size: 1.2em;
+      color: #fff;
+      display: block;
     }
 
     .grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 15px;
+      gap: 20px;
     }
 
-    @media (min-width: 992px) {
+    @media (min-width: 768px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .card {
       background: var(--bg-card);
-      border-radius: 18px;
-      padding: 20px;
+      border-radius: 24px;
+      padding: 25px;
       border: 1px solid rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(20px);
       transition: var(--transition);
-      animation: fadeIn 0.5s ease-out forwards;
-      opacity: 0;
+      position: relative;
+      overflow: hidden;
     }
 
-    .card:nth-child(1) { animation-delay: 0.1s; }
-    .card:nth-child(2) { animation-delay: 0.2s; }
-    .card:nth-child(3) { animation-delay: 0.3s; }
-    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      opacity: 0.5;
+    }
 
     .card:hover {
+      transform: translateY(-5px);
       border-color: rgba(233, 69, 96, 0.3);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
 
     .card h2 {
-      color: var(--primary);
-      margin-bottom: 18px;
-      font-size: 1.2em;
+      color: #fff;
+      margin-bottom: 25px;
+      font-size: 1.3em;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      font-weight: 700;
     }
 
-    .form-group { margin-bottom: 15px; }
+    .card h2 i { color: var(--primary); }
+
+    .form-group { margin-bottom: 20px; }
     
     .form-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       color: var(--text-dim);
       font-size: 0.85em;
+      font-weight: 500;
     }
 
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input, .form-group textarea {
       width: 100%;
-      padding: 12px;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
+      padding: 14px;
+      border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
       background: rgba(0,0,0,0.2);
       color: #fff;
       font-size: 0.95em;
@@ -257,55 +286,68 @@ app.get('/', (req, res) => {
       outline: none;
       border-color: var(--primary);
       background: rgba(0,0,0,0.4);
+      box-shadow: 0 0 15px rgba(233, 69, 96, 0.1);
     }
 
-    .form-group textarea { min-height: 120px; font-family: monospace; }
+    .form-group textarea { min-height: 140px; font-family: 'Fira Code', monospace; line-height: 1.5; }
 
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       border: none;
-      border-radius: 10px;
+      border-radius: 14px;
       cursor: pointer;
-      font-size: 0.95em;
-      font-weight: 600;
+      font-size: 1em;
+      font-weight: 700;
       transition: var(--transition);
-      margin-bottom: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary { 
+      background: linear-gradient(135deg, var(--primary) 0%, #ff5e62 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+    }
     
-    .btn-success { background: var(--secondary); color: #000; }
-    .btn-success:active { transform: scale(0.98); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(233, 69, 96, 0.5); }
+    
+    .btn-success { 
+      background: linear-gradient(135deg, var(--secondary) 0%, #3db890 100%);
+      color: #000;
+      box-shadow: 0 4px 15px rgba(78, 204, 163, 0.3);
+    }
+
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(78, 204, 163, 0.5); }
 
     .toggle-group {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 10px;
-      margin-bottom: 15px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 16px;
+      padding: 5px;
+      margin-bottom: 25px;
     }
 
     .toggle-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px;
-      background: rgba(255,255,255,0.03);
-      border-radius: 8px;
+      padding: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .toggle-item label { margin-bottom: 0; color: #fff; font-size: 0.9em; }
+    .toggle-item:last-child { border-bottom: none; }
+
+    .toggle-item label { margin-bottom: 0; color: #eee; font-size: 0.95em; }
 
     .switch {
       position: relative;
       display: inline-block;
-      width: 44px;
-      height: 24px;
+      width: 48px;
+      height: 26px;
     }
 
     .switch input { opacity: 0; width: 0; height: 0; }
@@ -314,49 +356,51 @@ app.get('/', (req, res) => {
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #333;
+      background-color: #2a2a2a;
       transition: .4s;
-      border-radius: 24px;
+      border-radius: 26px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px; width: 18px;
+      height: 20px; width: 20px;
       left: 3px; bottom: 3px;
       background-color: white;
       transition: .4s;
       border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     }
 
-    input:checked + .slider { background-color: var(--secondary); }
-    input:checked + .slider:before { transform: translateX(20px); }
+    input:checked + .slider { background: linear-gradient(to right, var(--secondary), #3db890); }
+    input:checked + .slider:before { transform: translateX(22px); }
 
     .alert {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      left: 20px;
-      padding: 15px 20px;
-      border-radius: 12px;
-      z-index: 1000;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 400px;
+      padding: 16px 24px;
+      border-radius: 16px;
+      z-index: 2000;
       display: none;
-      animation: slideIn 0.3s ease-out;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-weight: 600;
+      text-align: center;
     }
 
-    @keyframes slideIn {
-      from { transform: translateY(-100px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
+    .alert-success { background: rgba(78, 204, 163, 0.9); color: #000; }
+    .alert-error { background: rgba(233, 69, 96, 0.9); color: #fff; }
 
-    .alert-success { background: #4ecca3; color: #000; }
-    .alert-error { background: #e94560; color: #fff; }
-
-    .quick-actions {
+    .op-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -364,10 +408,10 @@ app.get('/', (req, res) => {
   <div class="container">
     <div class="header">
       <h1>${BRAND_NAME}</h1>
-      <p>Messenger Bot Elite Panel</p>
+      <p>Modern Control Interface</p>
       <div class="bot-status ${botStarted ? 'bot-online' : 'bot-offline'}">
-        <i class="fas fa-circle"></i>
-        ${botStarted ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE'}
+        <i class="fas fa-satellite-dish"></i>
+        ${botStarted ? 'SYSTEM ACTIVE' : 'SYSTEM IDLE'}
       </div>
     </div>
     
@@ -398,81 +442,91 @@ app.get('/', (req, res) => {
     
     <div class="grid">
       <div class="card">
-        <h2><i class="fas fa-robot"></i> Instance Manager</h2>
-        <div class="form-group">
-          <label>New Bot Identity</label>
-          <input type="text" id="instanceName" placeholder="Enter Bot Name...">
-        </div>
-        <div class="quick-actions">
-          <button onclick="createInstance()" class="btn btn-success"><i class="fas fa-plus"></i> Create</button>
-          <button onclick="deleteInstance()" class="btn btn-primary"><i class="fas fa-trash"></i> Delete</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2><i class="fas fa-cog"></i> Configuration</h2>
+        <h2><i class="fas fa-sliders-h"></i> CORE CONFIG</h2>
         <form id="configForm">
           <div class="form-group">
-            <label>Bot Display Name</label>
+            <label>IDENTITY</label>
             <input type="text" name="BOTNAME" value="${config.BOTNAME}" required>
           </div>
           <div class="form-group">
-            <label>Command Prefix</label>
+            <label>ACCESS PREFIX</label>
             <input type="text" name="PREFIX" value="${config.PREFIX}" required>
           </div>
           <div class="form-group">
-            <label>Master Admin UIDs</label>
+            <label>ADMINISTRATORS</label>
             <input type="text" name="ADMINBOT" value="${config.ADMINBOT.join(',')}" required>
           </div>
           
           <div class="toggle-group">
             <div class="toggle-item">
-              <label>Prefix Logic</label>
+              <label>Prefix Enforcement</label>
               <label class="switch">
                 <input type="checkbox" name="PREFIX_ENABLED" ${config.PREFIX_ENABLED ? 'checked' : ''}>
                 <span class="slider"></span>
               </label>
             </div>
             <div class="toggle-item">
-              <label>Admin Only Mode</label>
+              <label>Global Admin Mode</label>
               <label class="switch">
                 <input type="checkbox" name="ADMIN_ONLY_MODE" ${config.ADMIN_ONLY_MODE ? 'checked' : ''}>
                 <span class="slider"></span>
               </label>
             </div>
             <div class="toggle-item">
-              <label>Islamic Automations</label>
+              <label>Spiritual Automations</label>
               <label class="switch">
                 <input type="checkbox" name="AUTO_ISLAMIC_POST" ${config.AUTO_ISLAMIC_POST ? 'checked' : ''}>
                 <span class="slider"></span>
               </label>
             </div>
           </div>
-          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-sync-alt"></i> Update Core</button>
         </form>
       </div>
       
       <div class="card">
-        <h2><i class="fas fa-key"></i> Session Data</h2>
+        <h2><i class="fas fa-shield-alt"></i> AUTH SESSION</h2>
         <form id="appstateForm">
           <div class="form-group">
-            <label>Paste Facebook AppState JSON</label>
-            <textarea name="appstate" placeholder='Paste JSON cookies here...'>${hasAppstate ? JSON.stringify(getAppstate(), null, 2) : ''}</textarea>
+            <label>APPSTATE JSON</label>
+            <textarea name="appstate" placeholder='Paste authentication data...'>${hasAppstate ? JSON.stringify(getAppstate(), null, 2) : ''}</textarea>
           </div>
-          <button type="submit" class="btn btn-primary"><i class="fas fa-unlock-alt"></i> Update Session</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-fingerprint"></i> Authorize</button>
         </form>
       </div>
       
       <div class="card">
-        <h2><i class="fas fa-terminal"></i> Bot Operations</h2>
-        <button onclick="startBot()" class="btn btn-success"><i class="fas fa-play"></i> Launch Bot</button>
-        <div class="quick-actions">
-          <button onclick="reloadCommands()" class="btn btn-primary"><i class="fas fa-sync"></i> Cmds</button>
-          <button onclick="reloadEvents()" class="btn btn-primary"><i class="fas fa-redo"></i> Events</button>
+        <h2><i class="fas fa-bolt"></i> OPERATIONS</h2>
+        <button onclick="startBot()" class="btn btn-success"><i class="fas fa-power-off"></i> Initialize System</button>
+        <div class="op-grid">
+          <button onclick="reloadCommands()" class="btn btn-primary"><i class="fas fa-code"></i> Logic</button>
+          <button onclick="reloadEvents()" class="btn btn-primary"><i class="fas fa-calendar-check"></i> Events</button>
         </div>
-        <button onclick="sendTestMessage()" class="btn btn-primary" style="margin-top: 10px; background: #302b63;">
-          <i class="fas fa-paper-plane"></i> Send Signal Test
+        <button onclick="sendTestMessage()" class="btn btn-primary" style="margin-top: 12px; background: rgba(0,210,255,0.2); border: 1px solid var(--accent); color: var(--accent);">
+          <i class="fas fa-paper-plane"></i> Diagnostic Signal
         </button>
+      </div>
+
+      <div class="card">
+        <h2><i class="fas fa-info-circle"></i> SYSTEM INFO</h2>
+        <div style="font-size: 0.9em; line-height: 2; color: #ccc;">
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 5px 0;">
+            <span>Engine</span>
+            <span style="color: var(--secondary);">Node \${process.version}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 5px 0;">
+            <span>Region</span>
+            <span style="color: var(--secondary);">\${config.TIMEZONE}</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 5px 0;">
+            <span>Resource</span>
+            <span style="color: var(--secondary);">\${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+            <span>Auth</span>
+            <span style="color: \${hasAppstate ? 'var(--secondary)' : 'var(--primary)'}">\${hasAppstate ? 'Active' : 'Missing'}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -484,41 +538,6 @@ app.get('/', (req, res) => {
       alert.className = 'alert alert-' + type;
       alert.style.display = 'block';
       setTimeout(() => { alert.style.display = 'none'; }, 4000);
-    }
-    
-    async function deleteInstance() {
-      const name = document.getElementById('instanceName').value;
-      if (!name) return showAlert('Identity required!', 'error');
-      if (!confirm(\`Destroy \${name} instance?\`)) return;
-      
-      try {
-        const res = await fetch('/api/instance/delete', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name })
-        });
-        const data = await res.json();
-        if (data.success) showAlert('Instance terminated!', 'success');
-        else showAlert(data.error, 'error');
-      } catch (err) { showAlert('Execution failed', 'error'); }
-    }
-
-    async function createInstance() {
-      const name = document.getElementById('instanceName').value;
-      if (!name) return showAlert('Identity required!', 'error');
-      
-      try {
-        const res = await fetch('/api/instance/create', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name })
-        });
-        const data = await res.json();
-        if (data.success) {
-          showAlert('New instance deployed!', 'success');
-          setTimeout(() => location.reload(), 1500);
-        } else showAlert(data.error, 'error');
-      } catch (err) { showAlert('Deployment failed', 'error'); }
     }
     
     document.getElementById('configForm').addEventListener('submit', async (e) => {
@@ -541,15 +560,15 @@ app.get('/', (req, res) => {
           body: JSON.stringify(config)
         });
         const data = await res.json();
-        if (data.success) showAlert('Config synchronized!', 'success');
-        else showAlert('Sync failed', 'error');
-      } catch (err) { showAlert('Network error', 'error'); }
+        if (data.success) showAlert('Configuration Synced', 'success');
+        else showAlert('Sync Error', 'error');
+      } catch (err) { showAlert('Network Failure', 'error'); }
     });
     
     document.getElementById('appstateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const appstate = new FormData(e.target).get('appstate');
-      try { JSON.parse(appstate); } catch { return showAlert('Corrupt JSON format', 'error'); }
+      try { JSON.parse(appstate); } catch { return showAlert('Invalid JSON Data', 'error'); }
       
       try {
         const res = await fetch('/api/appstate', {
@@ -558,9 +577,9 @@ app.get('/', (req, res) => {
           body: JSON.stringify({ appstate: JSON.parse(appstate) })
         });
         const data = await res.json();
-        if (data.success) showAlert('Session authorized!', 'success');
-        else showAlert('Auth rejected', 'error');
-      } catch (err) { showAlert('Security error', 'error'); }
+        if (data.success) showAlert('Auth Success', 'success');
+        else showAlert('Auth Failed', 'error');
+      } catch (err) { showAlert('Security Error', 'error'); }
     });
     
     async function startBot() {
@@ -568,32 +587,32 @@ app.get('/', (req, res) => {
         const res = await fetch('/api/start', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
-          showAlert('Launching system core...', 'success');
+          showAlert('Engine Initialized', 'success');
           setTimeout(() => location.reload(), 2000);
         } else showAlert(data.error, 'error');
-      } catch (err) { showAlert('Core failure', 'error'); }
+      } catch (err) { showAlert('Core Fault', 'error'); }
     }
     
     async function reloadCommands() {
       try {
         const res = await fetch('/api/reload/commands', { method: 'POST' });
         const data = await res.json();
-        if (data.success) showAlert('Logic refreshed!', 'success');
-        else showAlert('Refresh failed', 'error');
-      } catch (err) { showAlert('Sync failure', 'error'); }
+        if (data.success) showAlert('Logic Refreshed', 'success');
+        else showAlert('Reload Failed', 'error');
+      } catch (err) { showAlert('Sync Fault', 'error'); }
     }
 
     async function reloadEvents() {
       try {
         const res = await fetch('/api/reload/events', { method: 'POST' });
         const data = await res.json();
-        if (data.success) showAlert('Events synchronized!', 'success');
-        else showAlert('Sync failed', 'error');
-      } catch (err) { showAlert('Sync failure', 'error'); }
+        if (data.success) showAlert('Events Refreshed', 'success');
+        else showAlert('Reload Failed', 'error');
+      } catch (err) { showAlert('Sync Fault', 'error'); }
     }
     
     async function sendTestMessage() {
-      const uid = prompt('Enter Target UID:');
+      const uid = prompt('Receiver UID:');
       if (!uid) return;
       try {
         const res = await fetch('/api/test-message', {
@@ -602,9 +621,9 @@ app.get('/', (req, res) => {
           body: JSON.stringify({ uid })
         });
         const data = await res.json();
-        if (data.success) showAlert('Signal delivered!', 'success');
-        else showAlert('Delivery failed', 'error');
-      } catch (err) { showAlert('Transmission error', 'error'); }
+        if (data.success) showAlert('Signal Delivered', 'success');
+        else showAlert('Delivery Failed', 'error');
+      } catch (err) { showAlert('Signal Error', 'error'); }
     }
   </script>
 </body>
@@ -612,49 +631,11 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.post('/api/instance/create', (req, res) => {
-  try {
-    const { name } = req.body;
-    const config = getConfig();
-    config.BOTNAME = name;
-    saveConfig(config);
-    
-    if (botModule) {
-      botModule.loadConfig();
-    }
-    
-    res.json({ success: true, message: "Bot " + name + " created and config updated" });
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
-
-app.post('/api/instance/delete', (req, res) => {
-  try {
-    const { name } = req.body;
-    const config = getConfig();
-    if (config.BOTNAME === name) {
-      config.BOTNAME = "RAZA BOT"; // Reset to default
-      saveConfig(config);
-      if (botModule) botModule.loadConfig();
-      res.json({ success: true, message: "Bot " + name + " deleted and config reset" });
-    } else {
-      res.json({ success: false, error: "Bot instance not found or name mismatch" });
-    }
-  } catch (error) {
-    res.json({ success: false, error: error.message });
-  }
-});
-
 app.post('/api/config', (req, res) => {
   try {
     const config = req.body;
     saveConfig(config);
-    
-    if (botModule) {
-      botModule.loadConfig();
-    }
-    
+    if (botModule) botModule.loadConfig();
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -674,16 +655,11 @@ app.post('/api/appstate', (req, res) => {
 app.post('/api/start', async (req, res) => {
   try {
     if (!fs.existsSync(appstatePath)) {
-      return res.json({ success: false, error: 'AppState not configured' });
+      return res.json({ success: false, error: 'AppState Missing' });
     }
-    
-    if (!botModule) {
-      botModule = require('./raza');
-    }
-    
+    if (!botModule) botModule = require('./raza');
     botModule.startBot();
     botStarted = true;
-    
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -692,10 +668,7 @@ app.post('/api/start', async (req, res) => {
 
 app.post('/api/reload/commands', async (req, res) => {
   try {
-    if (!botModule) {
-      return res.json({ success: false, error: 'Bot not started' });
-    }
-    
+    if (!botModule) return res.json({ success: false, error: 'System Offline' });
     await botModule.reloadCommands();
     res.json({ success: true });
   } catch (error) {
@@ -705,10 +678,7 @@ app.post('/api/reload/commands', async (req, res) => {
 
 app.post('/api/reload/events', async (req, res) => {
   try {
-    if (!botModule) {
-      return res.json({ success: false, error: 'Bot not started' });
-    }
-    
+    if (!botModule) return res.json({ success: false, error: 'System Offline' });
     await botModule.reloadEvents();
     res.json({ success: true });
   } catch (error) {
@@ -718,19 +688,12 @@ app.post('/api/reload/events', async (req, res) => {
 
 app.post('/api/test-message', async (req, res) => {
   try {
-    if (!botModule) {
-      return res.json({ success: false, error: 'Bot not started' });
-    }
-    
+    if (!botModule) return res.json({ success: false, error: 'System Offline' });
     const api = botModule.getApi();
-    if (!api) {
-      return res.json({ success: false, error: 'Bot not logged in' });
-    }
-    
+    if (!api) return res.json({ success: false, error: 'Auth Required' });
     const { uid } = req.body;
     const config = getConfig();
-    
-    api.sendMessage("Test message from " + config.BOTNAME + "!", uid);
+    api.sendMessage("Diagnostic Signal from " + config.BOTNAME + "!", uid);
     res.json({ success: true });
   } catch (error) {
     res.json({ success: false, error: error.message });
@@ -748,15 +711,11 @@ app.get('/api/status', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log("RAZA BOT Control Panel running on http://0.0.0.0:" + PORT);
-  
   if (fs.existsSync(appstatePath)) {
-    console.log('AppState found, starting bot...');
     setTimeout(() => {
       botModule = require('./raza');
       botModule.startBot();
       botStarted = true;
     }, 2000);
-  } else {
-    console.log('No appstate found. Please configure through web panel.');
   }
 });
