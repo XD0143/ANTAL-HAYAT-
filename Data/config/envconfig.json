@@ -5,7 +5,7 @@
     "100004370672067"
   ],
   "PREFIX_ENABLED": true,
-  "ADMIN_ONLY_MODE": true,
+  "ADMIN_ONLY_MODE": false,
   "AUTO_ISLAMIC_POST": true,
   "TIMEZONE": "Asia/Karachi"
 }
