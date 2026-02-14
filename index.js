@@ -80,181 +80,283 @@ app.get('/', (req, res) => {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>${BRAND_NAME} - Control Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      min-height: 100vh;
-      color: #fff;
-      padding: 20px;
+    :root {
+      --primary: #e94560;
+      --secondary: #4ecca3;
+      --bg-dark: #1a1a2e;
+      --bg-card: rgba(255, 255, 255, 0.05);
+      --text-main: #ffffff;
+      --text-dim: #aaaaaa;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      color: var(--text-main);
+      padding: 15px;
+      overflow-x: hidden;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     .container {
       max-width: 1200px;
       margin: 0 auto;
+      animation: fadeIn 0.8s ease-out;
     }
+
     .header {
       text-align: center;
-      padding: 30px 0;
-      border-bottom: 2px solid #e94560;
-      margin-bottom: 30px;
+      padding: 20px 0;
+      margin-bottom: 20px;
+      position: relative;
     }
+
     .header h1 {
-      font-size: 2.5em;
-      color: #e94560;
-      text-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+      font-size: 2.2em;
+      color: var(--primary);
+      text-shadow: 0 0 15px rgba(233, 69, 96, 0.4);
+      letter-spacing: 2px;
+      margin-bottom: 10px;
     }
+
     .header p {
-      color: #aaa;
-      margin-top: 10px;
+      color: var(--text-dim);
+      font-size: 0.9em;
     }
+
+    .bot-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85em;
+      font-weight: 600;
+      margin-top: 15px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: var(--transition);
+    }
+
+    .bot-online { color: var(--secondary); box-shadow: 0 0 10px rgba(78, 204, 163, 0.2); }
+    .bot-offline { color: var(--primary); box-shadow: 0 0 10px rgba(233, 69, 96, 0.2); }
+
     .status-bar {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
     }
+
+    @media (min-width: 768px) {
+      .status-bar { grid-template-columns: repeat(5, 1fr); }
+    }
+
     .status-item {
-      background: rgba(255,255,255,0.1);
-      padding: 15px 25px;
-      border-radius: 10px;
+      background: var(--bg-card);
+      padding: 15px;
+      border-radius: 12px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(5px);
+      transition: var(--transition);
     }
+
+    .status-item:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.08);
+      border-color: var(--primary);
+    }
+
     .status-item span {
       display: block;
-      font-size: 0.9em;
-      color: #aaa;
+      font-size: 0.75em;
+      color: var(--text-dim);
+      margin-bottom: 5px;
+      text-transform: uppercase;
     }
+
     .status-item strong {
-      font-size: 1.3em;
-      color: #4ecca3;
+      font-size: 1.1em;
+      color: var(--secondary);
     }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 20px;
+      grid-template-columns: 1fr;
+      gap: 15px;
     }
+
+    @media (min-width: 992px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     .card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 15px;
-      padding: 25px;
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--bg-card);
+      border-radius: 18px;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      transition: var(--transition);
+      animation: fadeIn 0.5s ease-out forwards;
+      opacity: 0;
     }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+
+    .card:hover {
+      border-color: rgba(233, 69, 96, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
     .card h2 {
-      color: #e94560;
-      margin-bottom: 20px;
-      font-size: 1.3em;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      padding-bottom: 10px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: #aaa;
-      font-size: 0.9em;
-    }
-    .form-group input, .form-group textarea, .form-group select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 8px;
-      background: rgba(0,0,0,0.3);
-      color: #fff;
-      font-size: 1em;
-    }
-    .form-group textarea {
-      min-height: 150px;
-      font-family: monospace;
-    }
-    .toggle {
+      color: var(--primary);
+      margin-bottom: 18px;
+      font-size: 1.2em;
       display: flex;
       align-items: center;
       gap: 10px;
     }
-    .toggle input[type="checkbox"] {
-      width: 50px;
-      height: 25px;
-      appearance: none;
-      background: #333;
-      border-radius: 25px;
-      position: relative;
-      cursor: pointer;
+
+    .form-group { margin-bottom: 15px; }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--text-dim);
+      font-size: 0.85em;
     }
-    .toggle input[type="checkbox"]:checked {
-      background: #4ecca3;
-    }
-    .toggle input[type="checkbox"]::before {
-      content: '';
-      position: absolute;
-      width: 21px;
-      height: 21px;
-      background: #fff;
-      border-radius: 50%;
-      top: 2px;
-      left: 2px;
-      transition: 0.3s;
-    }
-    .toggle input[type="checkbox"]:checked::before {
-      left: 27px;
-    }
-    .btn {
-      padding: 12px 25px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-      transition: 0.3s;
-      margin: 5px;
-    }
-    .btn-primary {
-      background: #e94560;
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      background: rgba(0,0,0,0.2);
       color: #fff;
+      font-size: 0.95em;
+      transition: var(--transition);
     }
-    .btn-primary:hover {
-      background: #d63050;
+
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(0,0,0,0.4);
     }
-    .btn-success {
-      background: #4ecca3;
-      color: #000;
+
+    .form-group textarea { min-height: 120px; font-family: monospace; }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
-    .btn-success:hover {
-      background: #3db890;
-    }
-    .alert {
-      padding: 15px;
-      border-radius: 8px;
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:active { transform: scale(0.98); }
+    
+    .btn-success { background: var(--secondary); color: #000; }
+    .btn-success:active { transform: scale(0.98); }
+
+    .toggle-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
       margin-bottom: 15px;
-      display: none;
     }
-    .alert-success {
-      background: rgba(78, 204, 163, 0.2);
-      border: 1px solid #4ecca3;
-      color: #4ecca3;
+
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
     }
-    .alert-error {
-      background: rgba(233, 69, 96, 0.2);
-      border: 1px solid #e94560;
-      color: #e94560;
-    }
-    .bot-status {
+
+    .toggle-item label { margin-bottom: 0; color: #fff; font-size: 0.9em; }
+
+    .switch {
+      position: relative;
       display: inline-block;
-      padding: 5px 15px;
-      border-radius: 20px;
-      font-size: 0.9em;
+      width: 44px;
+      height: 24px;
     }
-    .bot-online {
-      background: rgba(78, 204, 163, 0.2);
-      color: #4ecca3;
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #333;
+      transition: .4s;
+      border-radius: 24px;
     }
-    .bot-offline {
-      background: rgba(233, 69, 96, 0.2);
-      color: #e94560;
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider { background-color: var(--secondary); }
+    input:checked + .slider:before { transform: translateX(20px); }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      left: 20px;
+      padding: 15px 20px;
+      border-radius: 12px;
+      z-index: 1000;
+      display: none;
+      animation: slideIn 0.3s ease-out;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-100px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .alert-success { background: #4ecca3; color: #000; }
+    .alert-error { background: #e94560; color: #fff; }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
   </style>
 </head>
@@ -262,21 +364,16 @@ app.get('/', (req, res) => {
   <div class="container">
     <div class="header">
       <h1>${BRAND_NAME}</h1>
-      <p>Control Panel - Manage your Messenger Bot</p>
-      <p style="margin-top: 10px;">
-        <span class="bot-status ${botStarted ? 'bot-online' : 'bot-offline'}">
-          ${botStarted ? 'BOT ONLINE' : 'BOT OFFLINE'}
-        </span>
-      </p>
-      <div style="margin-top: 15px; color: #aaa; font-size: 0.9em;">
-        <p>WhatsApp: <a href="https://wa.me/923003310470" style="color: #4ecca3;">${BRAND_WHATSAPP}</a></p>
-        <p>Email: <a href="mailto:${BRAND_EMAIL}" style="color: #4ecca3;">${BRAND_EMAIL}</a></p>
+      <p>Messenger Bot Elite Panel</p>
+      <div class="bot-status ${botStarted ? 'bot-online' : 'bot-offline'}">
+        <i class="fas fa-circle"></i>
+        ${botStarted ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE'}
       </div>
     </div>
     
     <div class="status-bar">
       <div class="status-item">
-        <span>Time (PKT)</span>
+        <span>Time</span>
         <strong>${time}</strong>
       </div>
       <div class="status-item">
@@ -285,10 +382,10 @@ app.get('/', (req, res) => {
       </div>
       <div class="status-item">
         <span>Uptime</span>
-        <strong>${hours}h ${minutes}m ${seconds}s</strong>
+        <strong>${hours}h ${minutes}m</strong>
       </div>
       <div class="status-item">
-        <span>Commands</span>
+        <span>Cmds</span>
         <strong>${commandCount}</strong>
       </div>
       <div class="status-item">
@@ -301,101 +398,98 @@ app.get('/', (req, res) => {
     
     <div class="grid">
       <div class="card">
-        <h2>Create/Delete Bot Instance</h2>
+        <h2><i class="fas fa-robot"></i> Instance Manager</h2>
         <div class="form-group">
-          <label>Instance Name</label>
-          <input type="text" id="instanceName" placeholder="e.g. MyNewBot">
+          <label>New Bot Identity</label>
+          <input type="text" id="instanceName" placeholder="Enter Bot Name...">
         </div>
-        <button onclick="createInstance()" class="btn btn-success">Create Bot Instance</button>
-        <button onclick="deleteInstance()" class="btn btn-primary" style="background: #e94560;">Delete Bot Instance</button>
-        <p style="font-size: 0.8em; color: #aaa; margin-top: 10px;">Note: Creating a bot instance updates envconfig.json automatically.</p>
+        <div class="quick-actions">
+          <button onclick="createInstance()" class="btn btn-success"><i class="fas fa-plus"></i> Create</button>
+          <button onclick="deleteInstance()" class="btn btn-primary"><i class="fas fa-trash"></i> Delete</button>
+        </div>
       </div>
 
       <div class="card">
-        <h2>Bot Configuration</h2>
+        <h2><i class="fas fa-cog"></i> Configuration</h2>
         <form id="configForm">
           <div class="form-group">
-            <label>Bot Name</label>
+            <label>Bot Display Name</label>
             <input type="text" name="BOTNAME" value="${config.BOTNAME}" required>
           </div>
           <div class="form-group">
-            <label>Prefix</label>
+            <label>Command Prefix</label>
             <input type="text" name="PREFIX" value="${config.PREFIX}" required>
           </div>
           <div class="form-group">
-            <label>Admin UIDs (comma separated)</label>
+            <label>Master Admin UIDs</label>
             <input type="text" name="ADMINBOT" value="${config.ADMINBOT.join(',')}" required>
           </div>
-          <div class="form-group">
-            <label>Delete Reaction Emoji</label>
-            <input type="text" name="REACT_DELETE_EMOJI" value="${config.REACT_DELETE_EMOJI}">
+          
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <label>Prefix Logic</label>
+              <label class="switch">
+                <input type="checkbox" name="PREFIX_ENABLED" ${config.PREFIX_ENABLED ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <label>Admin Only Mode</label>
+              <label class="switch">
+                <input type="checkbox" name="ADMIN_ONLY_MODE" ${config.ADMIN_ONLY_MODE ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-item">
+              <label>Islamic Automations</label>
+              <label class="switch">
+                <input type="checkbox" name="AUTO_ISLAMIC_POST" ${config.AUTO_ISLAMIC_POST ? 'checked' : ''}>
+                <span class="slider"></span>
+              </label>
+            </div>
           </div>
-          <div class="form-group toggle">
-            <input type="checkbox" name="PREFIX_ENABLED" ${config.PREFIX_ENABLED ? 'checked' : ''}>
-            <label>Prefix Enabled</label>
-          </div>
-          <div class="form-group toggle">
-            <input type="checkbox" name="ADMIN_ONLY_MODE" ${config.ADMIN_ONLY_MODE ? 'checked' : ''}>
-            <label>Admin Only Mode</label>
-          </div>
-          <div class="form-group toggle">
-            <input type="checkbox" name="AUTO_ISLAMIC_POST" ${config.AUTO_ISLAMIC_POST ? 'checked' : ''}>
-            <label>Auto Islamic Posts (Hourly)</label>
-          </div>
-          <div class="form-group toggle">
-            <input type="checkbox" name="AUTO_GROUP_MESSAGE" ${config.AUTO_GROUP_MESSAGE ? 'checked' : ''}>
-            <label>Auto Group Messages (Hourly)</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Save Configuration</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
         </form>
       </div>
       
       <div class="card">
-        <h2>AppState Management</h2>
-        <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9em;">
-          Paste your Facebook cookies JSON below. AppState is required for bot login.
-        </p>
+        <h2><i class="fas fa-key"></i> Session Data</h2>
         <form id="appstateForm">
           <div class="form-group">
-            <label>AppState JSON</label>
-            <textarea name="appstate" placeholder='[{"key": "c_user", "value": "...", ...}]'>${hasAppstate ? JSON.stringify(getAppstate(), null, 2) : ''}</textarea>
+            <label>Paste Facebook AppState JSON</label>
+            <textarea name="appstate" placeholder='Paste JSON cookies here...'>${hasAppstate ? JSON.stringify(getAppstate(), null, 2) : ''}</textarea>
           </div>
-          <button type="submit" class="btn btn-primary">Save AppState</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-unlock-alt"></i> Update Session</button>
         </form>
       </div>
       
       <div class="card">
-        <h2>Bot Control</h2>
-        <p style="color: #aaa; margin-bottom: 15px; font-size: 0.9em;">
-          Start, restart, or reload the bot modules.
-        </p>
-        <button onclick="startBot()" class="btn btn-success">Start Bot</button>
-        <button onclick="reloadCommands()" class="btn btn-primary">Reload Commands</button>
-        <button onclick="reloadEvents()" class="btn btn-primary">Reload Events</button>
-        <div style="margin-top: 20px;">
-          <h3 style="color: #e94560; font-size: 1em; margin-bottom: 10px;">Quick Actions</h3>
-          <button onclick="sendTestMessage()" class="btn btn-primary">Send Test Message</button>
+        <h2><i class="fas fa-terminal"></i> Bot Operations</h2>
+        <button onclick="startBot()" class="btn btn-success"><i class="fas fa-play"></i> Launch Bot</button>
+        <div class="quick-actions">
+          <button onclick="reloadCommands()" class="btn btn-primary"><i class="fas fa-sync"></i> Cmds</button>
+          <button onclick="reloadEvents()" class="btn btn-primary"><i class="fas fa-redo"></i> Events</button>
         </div>
-      </div>
-      
-      <div class="card">
-        <h2>System Info</h2>
-        <div style="line-height: 2;">
-          <p><strong>Node Version:</strong> ${process.version}</p>
-          <p><strong>Platform:</strong> ${process.platform}</p>
-          <p><strong>Timezone:</strong> ${config.TIMEZONE}</p>
-          <p><strong>Memory:</strong> ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB</p>
-          <p><strong>Appstate:</strong> ${hasAppstate ? 'Configured' : 'Not Set'}</p>
-        </div>
+        <button onclick="sendTestMessage()" class="btn btn-primary" style="margin-top: 10px; background: #302b63;">
+          <i class="fas fa-paper-plane"></i> Send Signal Test
+        </button>
       </div>
     </div>
   </div>
   
   <script>
+    function showAlert(message, type) {
+      const alert = document.getElementById('alert');
+      alert.textContent = message;
+      alert.className = 'alert alert-' + type;
+      alert.style.display = 'block';
+      setTimeout(() => { alert.style.display = 'none'; }, 4000);
+    }
+    
     async function deleteInstance() {
       const name = document.getElementById('instanceName').value;
-      if (!name) return showAlert('Enter instance name', 'error');
-      if (!confirm(\`Are you sure you want to delete \${name}?\`)) return;
+      if (!name) return showAlert('Identity required!', 'error');
+      if (!confirm(\`Destroy \${name} instance?\`)) return;
       
       try {
         const res = await fetch('/api/instance/delete', {
@@ -404,19 +498,14 @@ app.get('/', (req, res) => {
           body: JSON.stringify({ name })
         });
         const data = await res.json();
-        if (data.success) {
-          showAlert(\`Instance \${name} deleted!\`, 'success');
-        } else {
-          showAlert(data.error || 'Failed to delete', 'error');
-        }
-      } catch (err) {
-        showAlert('Error deleting instance', 'error');
-      }
+        if (data.success) showAlert('Instance terminated!', 'success');
+        else showAlert(data.error, 'error');
+      } catch (err) { showAlert('Execution failed', 'error'); }
     }
 
     async function createInstance() {
       const name = document.getElementById('instanceName').value;
-      if (!name) return showAlert('Enter instance name', 'error');
+      if (!name) return showAlert('Identity required!', 'error');
       
       try {
         const res = await fetch('/api/instance/create', {
@@ -426,22 +515,10 @@ app.get('/', (req, res) => {
         });
         const data = await res.json();
         if (data.success) {
-          showAlert(\`Instance \${name} created and config updated!\`, 'success');
-          setTimeout(() => location.reload(), 2000);
-        } else {
-          showAlert(data.error || 'Failed to create', 'error');
-        }
-      } catch (err) {
-        showAlert('Error creating instance', 'error');
-      }
-    }
-    
-    function showAlert(message, type) {
-      const alert = document.getElementById('alert');
-      alert.textContent = message;
-      alert.className = 'alert alert-' + type;
-      alert.style.display = 'block';
-      setTimeout(() => alert.style.display = 'none', 5000);
+          showAlert('New instance deployed!', 'success');
+          setTimeout(() => location.reload(), 1500);
+        } else showAlert(data.error, 'error');
+      } catch (err) { showAlert('Deployment failed', 'error'); }
     }
     
     document.getElementById('configForm').addEventListener('submit', async (e) => {
@@ -451,13 +528,10 @@ app.get('/', (req, res) => {
         BOTNAME: formData.get('BOTNAME'),
         PREFIX: formData.get('PREFIX'),
         ADMINBOT: formData.get('ADMINBOT').split(',').map(s => s.trim()),
-        REACT_DELETE_EMOJI: formData.get('REACT_DELETE_EMOJI'),
         PREFIX_ENABLED: formData.get('PREFIX_ENABLED') === 'on',
         ADMIN_ONLY_MODE: formData.get('ADMIN_ONLY_MODE') === 'on',
         AUTO_ISLAMIC_POST: formData.get('AUTO_ISLAMIC_POST') === 'on',
-        AUTO_GROUP_MESSAGE: formData.get('AUTO_GROUP_MESSAGE') === 'on',
-        TIMEZONE: 'Asia/Karachi',
-        APPROVE_ONLY: false
+        TIMEZONE: 'Asia/Karachi'
       };
       
       try {
@@ -467,27 +541,15 @@ app.get('/', (req, res) => {
           body: JSON.stringify(config)
         });
         const data = await res.json();
-        if (data.success) {
-          showAlert('Configuration saved!', 'success');
-        } else {
-          showAlert(data.error || 'Failed to save', 'error');
-        }
-      } catch (err) {
-        showAlert('Error saving configuration', 'error');
-      }
+        if (data.success) showAlert('Config synchronized!', 'success');
+        else showAlert('Sync failed', 'error');
+      } catch (err) { showAlert('Network error', 'error'); }
     });
     
     document.getElementById('appstateForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(e.target);
-      const appstate = formData.get('appstate');
-      
-      try {
-        JSON.parse(appstate);
-      } catch {
-        showAlert('Invalid JSON format', 'error');
-        return;
-      }
+      const appstate = new FormData(e.target).get('appstate');
+      try { JSON.parse(appstate); } catch { return showAlert('Corrupt JSON format', 'error'); }
       
       try {
         const res = await fetch('/api/appstate', {
@@ -496,14 +558,9 @@ app.get('/', (req, res) => {
           body: JSON.stringify({ appstate: JSON.parse(appstate) })
         });
         const data = await res.json();
-        if (data.success) {
-          showAlert('AppState saved!', 'success');
-        } else {
-          showAlert(data.error || 'Failed to save', 'error');
-        }
-      } catch (err) {
-        showAlert('Error saving appstate', 'error');
-      }
+        if (data.success) showAlert('Session authorized!', 'success');
+        else showAlert('Auth rejected', 'error');
+      } catch (err) { showAlert('Security error', 'error'); }
     });
     
     async function startBot() {
@@ -511,48 +568,33 @@ app.get('/', (req, res) => {
         const res = await fetch('/api/start', { method: 'POST' });
         const data = await res.json();
         if (data.success) {
-          showAlert('Bot starting...', 'success');
+          showAlert('Launching system core...', 'success');
           setTimeout(() => location.reload(), 2000);
-        } else {
-          showAlert(data.error || 'Failed to start', 'error');
-        }
-      } catch (err) {
-        showAlert('Error starting bot', 'error');
-      }
+        } else showAlert(data.error, 'error');
+      } catch (err) { showAlert('Core failure', 'error'); }
     }
     
     async function reloadCommands() {
       try {
         const res = await fetch('/api/reload/commands', { method: 'POST' });
         const data = await res.json();
-        if (data.success) {
-          showAlert('Commands reloaded!', 'success');
-        } else {
-          showAlert(data.error || 'Failed to reload', 'error');
-        }
-      } catch (err) {
-        showAlert('Error reloading commands', 'error');
-      }
+        if (data.success) showAlert('Logic refreshed!', 'success');
+        else showAlert('Refresh failed', 'error');
+      } catch (err) { showAlert('Sync failure', 'error'); }
     }
-    
+
     async function reloadEvents() {
       try {
         const res = await fetch('/api/reload/events', { method: 'POST' });
         const data = await res.json();
-        if (data.success) {
-          showAlert('Events reloaded!', 'success');
-        } else {
-          showAlert(data.error || 'Failed to reload', 'error');
-        }
-      } catch (err) {
-        showAlert('Error reloading events', 'error');
-      }
+        if (data.success) showAlert('Events synchronized!', 'success');
+        else showAlert('Sync failed', 'error');
+      } catch (err) { showAlert('Sync failure', 'error'); }
     }
     
     async function sendTestMessage() {
-      const uid = prompt('Enter UID to send test message:');
+      const uid = prompt('Enter Target UID:');
       if (!uid) return;
-      
       try {
         const res = await fetch('/api/test-message', {
           method: 'POST',
@@ -560,17 +602,10 @@ app.get('/', (req, res) => {
           body: JSON.stringify({ uid })
         });
         const data = await res.json();
-        if (data.success) {
-          showAlert('Test message sent!', 'success');
-        } else {
-          showAlert(data.error || 'Failed to send', 'error');
-        }
-      } catch (err) {
-        showAlert('Error sending test message', 'error');
-      }
+        if (data.success) showAlert('Signal delivered!', 'success');
+        else showAlert('Delivery failed', 'error');
+      } catch (err) { showAlert('Transmission error', 'error'); }
     }
-    
-    setInterval(() => location.reload(), 60000);
   </script>
 </body>
 </html>
