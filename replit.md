@@ -2,7 +2,9 @@
 
 ## Overview
 
-RAZA-BoT is a Facebook Messenger automation bot built with Node.js. It provides automated group management, Islamic content posting, economy system, and various utility commands for Facebook Messenger groups. The bot uses a custom Facebook Chat API (ikashif-fca/ws3-fca) to interact with Messenger.
+RAZA-BoT is a Facebook Messenger chatbot built with Node.js. It connects to Facebook's Messenger platform using an unofficial Facebook Chat API (FCA) library and provides group management, economy system, media commands, Islamic content posting, and AI chat features. The bot runs an Express web server for configuration/monitoring alongside the Messenger bot process.
+
+The bot is designed for Urdu/Pakistani communities with Islamic content features (scheduled Quran posts, namaz reminders) and supports both English and Roman Urdu interactions.
 
 ## User Preferences
 
@@ -10,82 +12,79 @@ Preferred communication style: Simple, everyday language.
 
 ## System Architecture
 
-### Core Components
+### Entry Points
+- **`index.js`** — Express web server (port 5000) for dashboard/configuration UI and bot management. Reads/writes config and appstate files. Can start the bot module programmatically.
+- **`raza.js`** — Main bot process. Logs into Facebook using `raza-fca-pkg` (an FCA library), loads commands/events, sets up cron jobs for Islamic posts, and starts listening for messages.
 
-1. **Entry Points**
-   - `index.js` - Express server (port 5000) providing web dashboard for bot configuration and management
-   - `raza.js` - Main bot runtime that handles Facebook Messenger connection and event processing
+### Bot Framework Pattern
+The bot follows a modular command-handler architecture:
 
-2. **Facebook Chat API Integration**
-   - Located in `Data/raza-fca/` - Custom Facebook Chat API wrapper (ikashif-fca)
-   - Handles authentication via `appstate.json` (cookie-based login)
-   - Manages automatic token refresh and session persistence
-   - Stores Facebook tokens in `RazaFca.json`
+- **Commands** live in `raza/commands/` — each file exports a `config` object (name, aliases, category, permissions) and a `run()` function. Some commands use the older `module.exports.config` / `module.exports.run` pattern.
+- **Events** live in `raza/events/` — triggered by non-message events (joins, leaves, etc.)
+- **Command loading** is handled by `Data/system/handle/handleRefresh.js` which scans the commands/events directories
+- **Message routing** happens in `Data/system/listen.js` which dispatches to handleCommand, handleEvent, handleReaction, handleReply, handleNotification, handleAutoDetect, and handleCreateDatabase
 
-3. **Command System**
-   - Commands located in `raza/commands/` directory
-   - Each command exports a `config` object (name, aliases, description, usage, category, permissions) and a `run` function
-   - Commands are dynamically loaded via `Data/system/handle/handleRefresh.js`
-   - Client stores commands in a Map: `client.commands`
+### Key Architectural Components
 
-4. **Event Handling**
-   - `Data/system/listen.js` - Main event listener that routes events to appropriate handlers
-   - Handlers in `Data/system/handle/`:
-     - `handleCommand` - Processes user commands
-     - `handleEvent` - Handles system events (join/leave)
-     - `handleReaction` - Processes message reactions
-     - `handleReply` - Manages reply-based interactions
-     - `handleNotification` - Handles Facebook notifications
-     - `handleCreateDatabase` - Auto-creates user/thread records
+**Configuration:** `Data/config/envconfig.json` stores bot name, prefix, admin UIDs, toggle flags (admin-only mode, auto Islamic posts), and timezone.
 
-5. **Data Controllers**
-   - `Data/system/controllers/users.js` - User management (bans, names, data)
-   - `Data/system/controllers/threads.js` - Group management (approval, settings, bans)
-   - `Data/system/controllers/currencies.js` - Economy system (balance, bank, daily rewards)
+**Authentication:** Uses Facebook cookie-based appstate (`appstate.json`) to maintain login sessions. `RazaFca.json` contains fb_dtsg tokens for API calls. The FCA library (`raza-fca-pkg`) handles the actual Facebook API communication.
 
-### Configuration
+**Database Layer:** Uses `better-sqlite3` for local SQLite storage through controller classes:
+- `Data/system/controllers/users.js` — User management (banning, names, data)
+- `Data/system/controllers/threads.js` — Thread/group management (approval, settings like antijoin/antiout/lock features)
+- `Data/system/controllers/currencies.js` — Economy system (wallet, bank, daily rewards, deposits)
 
-- `Data/config/envconfig.json` - Main bot configuration:
-  - BOTNAME, PREFIX, ADMINBOT (admin UIDs)
-  - Feature toggles: AUTO_ISLAMIC_POST, AUTO_GROUP_MESSAGE, APPROVE_ONLY, ADMIN_ONLY_MODE
-  - TIMEZONE set to Asia/Karachi
+**Utility Layer:**
+- `Data/utility/send.js` — Wrapper class for sending messages, reactions, and unsending
+- `Data/utility/logs.js` — Branded logging with chalk colors, writes to daily log files
+- `Data/utility/utils.js` — Time formatting, random helpers, validation
 
-- `Data/config/islamic_messages.json` - Islamic content for scheduled posts
+### Command Categories
+- **Admin** — Bot admin management, config, broadcast, approve groups, admin-only toggle
+- **Group** — Tag all, antijoin, antiout, kick, add, lock settings, group info
+- **Economy** — Balance, daily rewards, deposit, bank system
+- **Media** — Avatar, GIF search, music download, image editing, cover creation
+- **Fun** — Flirt, kiss, hack (novelty), engagement/friend pair image creation
+- **Friend** — Accept/decline friend requests, block, friend list, follow
+- **Utility** — Help, history, inbox, mute, file management, clear cache
+- **AI Chat** — `goibot.js` uses Cerebras AI API for conversational responses with gender detection and chat history
 
-### Key Features
+### Permission System
+- Commands can be marked `adminOnly: true` (requires being in `ADMINBOT` array)
+- Commands can be marked `groupOnly: true`
+- Group-level admin checks compare against Facebook group admin list
+- `ADMIN_ONLY_MODE` config flag restricts all commands to bot admins only
+- Thread approval system controls which groups the bot operates in
 
-1. **Group Management** - Anti-join, anti-out, group admin controls, approval system
-2. **Economy System** - Balance, bank, daily rewards, deposits/withdrawals
-3. **Islamic Content** - Scheduled Quran verses, Namaz reminders, Islamic posts
-4. **Media Commands** - Avatar, GIF search, cover photo generation
-5. **Admin Controls** - Broadcast, ban/unban, friend management, configuration
-
-### Database
-
-- Uses file-based JSON storage in `Data/system/database/`
-- SQLite via better-sqlite3 for persistent data (user/thread records)
-- Cache files stored in `raza/commands/cache/`
+### Scheduled Tasks
+- Islamic content auto-posting via `node-cron` (Quran ayats, namaz reminders with images)
+- Autosend scheduled messages per group
 
 ## External Dependencies
 
-### NPM Packages
-- `ws3-fca` / `ikashif-fca` - Facebook Chat API for Messenger automation
-- `express` - Web server for dashboard
-- `better-sqlite3` - SQLite database
-- `axios` - HTTP requests for external APIs
-- `jimp` / `canvas` - Image processing
-- `moment-timezone` - Time handling (Asia/Karachi timezone)
-- `node-cron` - Scheduled tasks (Islamic posts, auto-messages)
-- `yt-search` - YouTube search functionality
-- `fs-extra` - Enhanced file system operations
+### Core Libraries
+- **raza-fca-pkg** — Facebook Chat API library for Messenger interaction (login, send/receive messages, manage threads)
+- **express** — Web server for dashboard/monitoring (port 5000)
+- **better-sqlite3** — Local SQLite database for users, threads, currencies
+- **node-cron** — Scheduled task execution (Islamic posts, auto-messages)
 
-### External APIs
-- Facebook Graph API - User avatars, profile data
-- Tenor API - GIF search (API key: LIVDSRZULELA)
-- ImgBB API - Image hosting
-- Cerebras AI API - AI chat functionality (goibot command)
+### Media & Image Processing
+- **jimp** — Image manipulation (circular avatars, pair edits, engagement cards)
+- **canvas** — Additional image generation capabilities
+- **axios** — HTTP requests for downloading images, calling external APIs
 
-### Authentication
-- Facebook session managed via `appstate.json` (cookie-based)
-- Automatic fb_dtsg token refresh scheduled daily
-- Bot admin UIDs stored in envconfig.json
+### External APIs Used
+- **Cerebras AI API** (`api.cerebras.ai`) — AI chat completions for the goibot command
+- **Tenor GIF API** — GIF search and sticker retrieval
+- **ImgBB API** — Image hosting/uploading
+- **Facebook Graph API** — Profile pictures, user info
+- **YouTube search** (`yt-search`) — Music search
+- **anabot.my.id API** — YouTube music downloading
+
+### Other Dependencies
+- **moment-timezone** — Time handling (Asia/Karachi timezone)
+- **chalk** — Colored console output
+- **fs-extra** — Enhanced file system operations
+- **string-similarity** — Fuzzy command matching
+- **node-fetch** — Additional HTTP fetch support

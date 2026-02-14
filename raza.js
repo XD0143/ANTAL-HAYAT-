@@ -381,7 +381,8 @@ async function startBot() {
     
     let stopListen;
     try {
-      stopListen = api.listenMqtt(listener);
+      // Use standard listen instead of listenMqtt if connection is refused
+      stopListen = api.listen(listener);
     } catch (e) {
       logs.error('LISTEN', 'Failed to start listener:', e.message);
     }

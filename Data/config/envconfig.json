@@ -1,8 +1,8 @@
 {
   "BOTNAME": "Muskan",
-  "PREFIX": ".",
+  "PREFIX": "/",
   "ADMINBOT": [
-    "100004370672067"
+    "100065216344877"
   ],
   "PREFIX_ENABLED": true,
   "ADMIN_ONLY_MODE": false,
