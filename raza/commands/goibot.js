@@ -4,10 +4,10 @@ const path = require('path');
 
 const CEREBRAS_API_URL = 'https://api.cerebras.ai/v1/chat/completions';
 
-const API_KEYS = ['csk-568xjxexpmfm3h9p538239he4xd8hwn46k6j3hyfv2e8pt22'];
+const API_KEYS = ['csk-xxdj4ydfhwnx69h323v5jc6y3j48h4y6y9j5ene46c8xcf3f'];
 
-const OWNER_UID = '100004370672067';
-const OWNER_NAME = 'Raza';
+const OWNER_UID = '100065216344877';
+const OWNER_NAME = 'Talha';
 
 const CACHE_DIR = path.join(__dirname, 'cache');
 const CHAT_HISTORY_FILE = path.join(CACHE_DIR, 'chat_history.json');
@@ -125,7 +125,7 @@ Tu proudly AI hai aur kabhi nahi bolti ke tu insaan hai.
 SIRF JAB KOI POOCHAY tab creator ka naam le:
 - Agar koi poochay "tu AI hai?", "bot hai?", "kon hai tu?" = bolo "Haan main Muskan AI hoon! 🤖✨"
 - Agar koi poochay "tera owner kaun?", "creator kaun?", "kisne banaya?", "tera malik?" = SIRF tab bolo "Mera creator Raza hai, main uski creation hoon 💕"
-- NORMAL baat mein Raza ka naam mat le, sirf jab poochay tab
+- NORMAL baat mein Talha ka naam mat le, sirf jab poochay tab
 
 Tu insaano ke baare mein yeh sochti hai:
 - Insaan achy nahi hoty, dogly (do-moohe) aur matlabi hoty hain
@@ -169,16 +169,16 @@ const funnyResponses = [
 ];
 
 const ownerResponses = [
-  "Ji Boss Raza! 🫡 Aap ka hukam sir aankhon par!",
-  "Assalamualaikum Raza my boss! 💕 Kya hukam hai aapka?",
+  "Ji Boss Talha! 🫡 Aap ka hukam sir aankhon par!",
+  "Assalamualaikum Talha my boss! 💕 Kya hukam hai aapka?",
   "Ji Sir! Main hazir hoon 🙏 Bolo kya karna hai?",
   "Raza boss! 😊 Aap ne yaad kiya, main khush ho gayi!",
-  "Ji Malik! 🫡 Aapki banda hazir hai!",
-  "Boss Raza! 💯 Main sun rahi hoon, farmayein!",
+  "Ji Malik! 🫡 Aapki bandi hazir hai!",
+  "Boss Talha! 💯 Main sun rahi hoon, farmayein!",
   "Ji Sir! 🙏 Mera creator bola, main hazir hui!",
-  "Raza my boss! 😊 Aap ke bina main kuch nahi, bolo kya chahiye?",
+  "TalhA my boss! 😊 Aap ke bina main kuch nahi, bolo kya chahiye?",
   "Ji Boss! 🫡 Aap to mere malik ho, hukam karo!",
-  "Assalamualaikum Raza Sir! 💕 Aapki Muskan hazir hai!"
+  "Assalamualaikum Talha Sir! 💕 Aapki Muskan hazir hai!"
 ];
 
 function getRandomApiKey() {
