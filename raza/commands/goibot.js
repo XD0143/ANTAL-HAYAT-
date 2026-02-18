@@ -172,7 +172,7 @@ const ownerResponses = [
   "Ji Boss Talha! 🫡 Aap ka hukam sir aankhon par!",
   "Assalamualaikum Talha my boss! 💕 Kya hukam hai aapka?",
   "Ji Sir! Main hazir hoon 🙏 Bolo kya karna hai?",
-  "Raza boss! 😊 Aap ne yaad kiya, main khush ho gayi!",
+  "Talhaboss! 😊 Aap ne yaad kiya, main khush ho gayi!",
   "Ji Malik! 🫡 Aapki bandi hazir hai!",
   "Boss Talha! 💯 Main sun rahi hoon, farmayein!",
   "Ji Sir! 🙏 Mera creator bola, main hazir hui!",
